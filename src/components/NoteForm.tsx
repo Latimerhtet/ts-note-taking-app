@@ -90,7 +90,7 @@ function NoteForm({
       </div>
       <div className="w-full flex justify-end gap-2 items-center">
         <button type="submit" className="p-2 bg-gray-500 text-white rounded-lg">
-          Add Note
+          {title == "" ? "Add Note" : "Edit Note"}
         </button>
         <Link
           to={".."}

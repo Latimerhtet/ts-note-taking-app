@@ -5,16 +5,19 @@ import ReactSelect from "react-select";
 import { Note, Tag } from "../App";
 import { useMemo, useState } from "react";
 import NoteCard from "../components/NoteCard";
+import TagUpdateModal from "../components/TagUpdateModal";
 
 interface NoteListProps {
   availableTags: Tag[];
   notes: Note[];
+  updateTag: (id: string, label: string) => void;
+  deleteTag: (id: string) => void;
 }
 
-function Home({ availableTags, notes }: NoteListProps) {
+function Home({ availableTags, notes, updateTag, deleteTag }: NoteListProps) {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [title, setTitle] = useState<string>("");
-
+  const [showModal, setShowModal] = useState<boolean>(true);
   const filteredNotes = useMemo(() => {
     return notes.filter((note) => {
       return (
@@ -37,7 +40,10 @@ function Home({ availableTags, notes }: NoteListProps) {
             <FaPlus className="text-4xl border-2 rounded-full p-[5px] text-white bg-green-500 shadow-md" />
           </Link>
 
-          <FiEdit className="text-4xl border-2 rounded-full p-[5px] text-white bg-sky-600 shadow-md" />
+          <FiEdit
+            onClick={() => setShowModal(true)}
+            className="text-4xl border-2 rounded-full p-[5px] text-white bg-sky-600 shadow-md"
+          />
         </div>
       </nav>
       <div className="flex justify-between mobile:flex-col mobile:gap-4 mb-4">
@@ -82,6 +88,13 @@ function Home({ availableTags, notes }: NoteListProps) {
           />
         ))}
       </div>
+      <TagUpdateModal
+        show={showModal}
+        setShow={setShowModal}
+        availableTags={availableTags}
+        updateTag={updateTag}
+        deleteTag={deleteTag}
+      />
     </section>
   );
 }

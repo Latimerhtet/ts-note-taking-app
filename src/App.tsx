@@ -52,10 +52,6 @@ function App() {
     });
   }
 
-  function onAddTag(tag: Tag) {
-    setTags((prev) => [...prev, tag]);
-  }
-
   function onUpdateNote(id: string, { tags, ...data }: NoteData) {
     setNotes((prevNotes) => {
       return prevNotes.map((note) => {
@@ -68,6 +64,31 @@ function App() {
     });
   }
 
+  function onDeleteNote(id: string) {
+    setNotes((prevNotes) => {
+      return prevNotes.filter((note) => note.id !== id);
+    });
+  }
+  function onAddTag(tag: Tag) {
+    setTags((prev) => [...prev, tag]);
+  }
+  function updateTag(id: string, label: string) {
+    setTags((prevTags) => {
+      return prevTags.map((tag) => {
+        if (tag.id === id) {
+          return { ...tag, label };
+        } else {
+          return tag;
+        }
+      });
+    });
+  }
+  function deleteTag(id: string) {
+    setTags((prevTags) => {
+      return prevTags.filter((tag) => tag.id !== id);
+    });
+  }
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -75,7 +96,14 @@ function App() {
       children: [
         {
           index: true,
-          element: <Home notes={notesWithTags} availableTags={tags} />,
+          element: (
+            <Home
+              notes={notesWithTags}
+              availableTags={tags}
+              updateTag={updateTag}
+              deleteTag={deleteTag}
+            />
+          ),
         },
         {
           path: "/new",
@@ -91,7 +119,7 @@ function App() {
           path: "/:id",
           element: <NoteLayout notes={notesWithTags} />,
           children: [
-            { index: true, element: <Note /> },
+            { index: true, element: <Note onDelete={onDeleteNote} /> },
             {
               path: "/:id/edit",
               element: (
